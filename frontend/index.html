@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>衣笠クラブ 企画書ジェネレーター</title>
+  <link rel="stylesheet" href="./public/style.css" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      margin: 0;
+      background: #0f1115;
+      color: #eaeef7;
+    }
+
+    header {
+      padding: 16px 20px;
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      height: calc(100vh - 60px);
+    }
+
+    .pane {
+      overflow: auto;
+    }
+
+    .left {
+      border-right: 1px solid #1f2937;
+    }
+
+    .section {
+      padding: 16px 20px;
+      border-bottom: 1px dashed #1f2937;
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 12px;
+      opacity: 0.9;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0b0f17;
+      color: #eaeef7;
+    }
+
+    textarea {
+      min-height: 88px;
+    }
+
+    .hint {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    .actions {
+      position: sticky;
+      bottom: 0;
+      background: #0b0f17;
+      padding: 12px 20px;
+      border-top: 1px solid #1f2937;
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #1f2937;
+      color: #eaeef7;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    .preview {
+      padding: 16px 20px;
+    }
+
+    .preview h2 {
+      margin: 16px 0 6px;
+      font-size: 16px;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 6px;
+    }
+
+    .kvs {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 6px 12px;
+      font-size: 14px;
+    }
+
+    .kvs div.key {
+      opacity: 0.8;
+    }
+
+    .muted {
+      opacity: 0.7;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      font-size: 11px;
+      margin-right: 4px;
+    }
+
+    .ok {
+      color: #22c55e;
+    }
+
+    .err {
+      color: #ef4444;
+    }
+
+    .small {
+      font-size: 12px;
+    }
+
+    a {
+      color: #93c5fd;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="brand">衣笠クラブ 企画書ジェネレーター</div>
+      <div class="sub">ライブプレビュー &amp; DOCX出力</div>
+    </div>
+  </header>
+  <!-- 2カラムの親に shell を加えてデザイン適用 -->
+  <div class="wrap shell">
+    <!-- 左：フォーム（カード化） -->
+    <div class="pane left panel">
+      <form id="form">
+        <!-- ───── 基本情報 ───── -->
+        <div class="section">
+          <h2>基本情報</h2>
+          <div class="grid">
+            <div>
+              <label>事業名</label>
+              <input name="title" type="text" placeholder="例：第一回京都清掃" />
+              <div class="hint">＊対外にも伝わる活動名か</div>
+            </div>
+            <div>
+              <label>実施クラブ</label>
+              <input name="club" type="text" value="京都衣笠クラブ" />
+            </div>
+            <div>
+              <label>実施部署（〇〇セクション）</label>
+              <input name="dept" type="text" placeholder="例：環境保護セクション" />
+            </div>
+            <div>
+              <label>活動カテゴリ</label>
+              <select name="category">
+                <option>活動</option>
+                <option>会合</option>
+                <option>会議</option>
+                <option>研修</option>
+                <option>オンラインイベント</option>
+              </select>
+              <div class="hint">この中から1つ選択</div>
+            </div>
+            <div>
+              <label>活動分野</label>
+              <select name="field">
+                <option>国際協力</option>
+                <option>環境保護</option>
+                <option>地域活性化</option>
+                <option>災害救援</option>
+                <option>社会福祉</option>
+                <option>子ども</option>
+                <option>その他の活動</option>
+              </select>
+              <div class="hint">この中から1つ選択（1分野に絞る）</div>
+            </div>
+
+            <div>
+              <label>日時</label>
+              <div class="two">
+                <select name="year" id="yearSel"></select>
+                <select name="month" id="monthSel"></select>
+                <select name="day" id="daySel"></select>
+              </div>
+              <div class="two" style="margin-top:8px">
+                <input name="time_start" id="timeStart" type="time" value="09:00">
+                <input name="time_end" id="timeEnd" type="time" value="17:00">
+              </div>
+              <div class="hint">曜日は自動計算。表示形式：2025年9月22日（月） 15:00-19:00</div>
+            </div>
+
+            <div>
+              <label>活動場所（市町まで記入）</label>
+              <input name="place" type="text" placeholder="例：京都府京都市北区 立命館大学周辺" />
+            </div>
+
+            <div class="two">
+              <div>
+                <label>想定人数（IVUSA）</label>
+                <input name="expected_ivusa" type="number" min="0" value="0" />
+              </div>
+              <div>
+                <label>想定人数（他）</label>
+                <input name="expected_other" type="number" min="0" value="0" />
+              </div>
+            </div>
+
+            <div>
+              <label>事業責任者（氏名・所属大学）</label>
+              <input name="owner" type="text" placeholder="" />
+            </div>
+            <div>
+              <label>他クラブ参加</label>
+              <select name="other_club">
+                <option>可能</option>
+                <option>不可能</option>
+              </select>
+            </div>
+            <div>
+              <label>受益者（活動で利益を受ける人）</label>
+              <input name="beneficiary" type="text" placeholder="" />
+            </div>
+            <div>
+              <label>新規事業かどうか</label>
+              <select name="is_new">
+                <option>既存（これまでにやったことがある活動）</option>
+                <option>新規（これまでにやったことがない活動）</option>
+              </select>
+            </div>
+            <div>
+              <label>活動内容の種類</label>
+              <select name="activity_kind">
+                <option>屋外での作業</option>
+                <option>活動・イベントの参加者との交流</option>
+                <option>受益者への支援（サポート）</option>
+                <option>ワークショップや勉強会</option>
+                <option>社会への情報発信や提言</option>
+              </select>
+            </div>
+            <div>
+              <label>活動期間</label>
+              <select name="duration">
+                <option>3時間未満</option>
+                <option>3時間以上1日未満</option>
+                <option>1日以上2日未満</option>
+                <option>2日以上5日未満</option>
+                <option>5日以上2週間未満</option>
+                <option>2週間以上</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───── 必要スキル ───── -->
+        <div class="section">
+          <h2>必要スキル（優先度上位3つまで）</h2>
+          <div class="grid">
+            <div><label><input type="checkbox" name="skills" value="体力" /> 体力</label></div>
+            <div><label><input type="checkbox" name="skills" value="社会課題の専門知識" /> 当該の社会的課題に関する専門的知識</label></div>
+            <div><label><input type="checkbox" name="skills" value="モチベーション管理（スタマネ）" /> 隊員のモチベーション管理（スタマネ）</label></div>
+            <div><label><input type="checkbox" name="skills" value="現地コミュニケーション能力" /> 現地の人とのコミュニケーション能力</label></div>
+            <div><label><input type="checkbox" name="skills" value="渉外・営業スキル" /> 渉外・営業スキル（対企業・支援者）</label></div>
+            <div><label><input type="checkbox" name="skills" value="ロジスティクス" /> ロジスティックス</label></div>
+            <div><label><input type="checkbox" name="skills" value="Excelスキル" /> Excelスキル</label></div>
+            <div><label><input type="checkbox" name="skills" value="文章作成" /> 文章作成（ライティング）</label></div>
+            <div><label><input type="checkbox" name="skills" value="デザイン・動画編集" /> デザイン・動画編集などのスキル</label></div>
+            <div><label><input type="checkbox" name="skills" value="サバイバル能力" /> ハードな環境におけるサバイバル能力</label></div>
+            <div><label><input type="checkbox" name="skills" value="政策提案（アドボカシー）" /> 政策提案（アドボカシー）能力・経験</label></div>
+            <div><label><input type="checkbox" name="skills" value="語学" /> 語学</label></div>
+          </div>
+          <div class="hint">優先順位の高いものから最大3つまで選択してください。</div>
+        </div>
+
+        <div class="section">
+          <h2>目的・達成要件</h2>
+          <label>目的（背景・対外性・5W1Hを意識）</label>
+          <textarea name="purpose" placeholder="背景にある社会問題、対外的要素、5W1H（誰が・何を・いつ・どこで・なぜ・どのように）を含めて記述"></textarea>
+          <label>達成要件（確実に測れるもの、可能なら数値で）</label>
+          <textarea name="kpi" placeholder="例：参加者アンケート満足度80%以上、回収した漂着ゴミ〇袋、SNS到達数〇件 等"></textarea>
+        </div>
+
+        <div class="section">
+          <h2>内容（5W1H・作業内容・手順）</h2>
+          <textarea name="details" placeholder="活動内容がわかるように。作業内容・手順、5W1Hの要素も含める"></textarea>
+        </div>
+
+        <div class="section">
+          <h2>事業計画</h2>
+          <label>事業実施までのスケジュール</label>
+          <textarea name="pre_schedule" placeholder="
+          承認のタイミング、下見の日程、打ち合わせの日程、周知のタイミングなど
+          事後業務のスケジュールも忘れずに！！
+          "></textarea>
+          <label>計画実行のためのスケジュール</label>
+          <textarea name="exec_schedule" placeholder="IVUSAとしてのゴールを明確に記述する"></textarea>
+        </div>
+
+        <div class="section">
+          <h2>当日計画（作戦）</h2>
+          <label>当日のタイムスケジュール</label>
+          <textarea name="day_schedule" placeholder="
+          活動当日のタイムスケジュール
+          （集合時間、活動開始時間、終了時間、他団体の方との打ち合わせの時間、休憩時間など）
+          "></textarea>
+        </div>
+
+        <div class="section">
+          <h2>リスクチェック</h2>
+          <label>事前のリスクヘッジ（発生要因／予防策／発生時対応）</label>
+          <textarea name="risk_before" placeholder="
+          準備段階で起こりうるリスクを書く
+          （どんな些細なことでもよいので、できるだけたくさん書こう）
+          →どうやったらそのリスクを防げるか書く
+          ⇒リスクが起こってしまった場合の対応策を書く
+          "></textarea>
+          <label>当日のリスクヘッジ（発生要因／予防策／発生時対応）</label>
+          <textarea name="risk_during" placeholder="
+          当日起こりうるリスクを書く
+          （どんな些細なことでもよいので、できるだけたくさん書いてみよう）
+          →どうやったらそのリスクを防げるか書く
+          ⇒リスクが起こってしまった場合の対応策を書く
+          "></textarea>
+        </div>
+
+        <div class="section">
+          <h2>実施主体</h2>
+          <label>関係機関・カウンターパート等（IVUSAとの関係性／団体名／URL）</label>
+          <textarea name="stakeholders" placeholder="
+          IVUSAとの関係性
+          どこの誰（団体）なのかまで詳しく書く！！
+          (団体紹介のURLなんかも貼ってくれると助かります。)
+          "></textarea>
+        </div>
+
+        <div class="section">
+          <h2>その他</h2>
+          <div class="grid">
+            <div>
+              <label>役所への申請</label>
+              <select name="permit_city">
+                <option>許認可申請</option>
+                <option>実施事前告知</option>
+                <option>実施合意</option>
+                <option>不要</option>
+              </select>
+            </div>
+            <div>
+              <label>消防署への申請</label>
+              <select name="permit_fire">
+                <option>許認可申請</option>
+                <option>実施事前告知</option>
+                <option>実施合意</option>
+                <option>不要</option>
+              </select>
+            </div>
+            <div>
+              <label>警察への申請</label>
+              <select name="permit_police">
+                <option>許認可申請</option>
+                <option>実施事前告知</option>
+                <option>実施合意</option>
+                <option>不要</option>
+              </select>
+            </div>
+          </div>
+          <label>その他（任意）</label>
+          <textarea name="other_notes" placeholder=""></textarea>
+
+          <h3 class="small">予算と資金調達方法</h3>
+          <div class="grid">
+            <div>
+              <label>予算総額（円）</label>
+              <input name="budget_total" type="number" min="0" value="0" />
+            </div>
+            <div>
+              <label>調達方法</label>
+              <select name="funding">
+                <option>クラブ金</option>
+                <option>参加費徴収</option>
+                <option>本部事業基金</option>
+                <option>その他</option>
+              </select>
+            </div>
+          </div>
+          <label>予算の使途（具体的に）</label>
+          <textarea name="budget_usage" placeholder="何にいくら使うか具体的に明記"></textarea>
+
+          <h3 class="small">広報</h3>
+          <div class="grid">
+            <div>
+              <label>プレスリリース</label>
+              <select name="press">
+                <option>無し</option>
+                <option>有り</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+
+          <h3 class="small">安全・運用</h3>
+          <div class="grid">
+            <div><label>学生運転</label><select name="drive_student">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>レンタカー利用</label><select name="rentacar">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>一般参加</label><select name="general_join">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>刃物使用</label><select name="knife">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>動力機材使用</label><select name="power_tool">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>自炊</label><select name="self_cook">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+            <div><label>宿泊利用</label><select name="stay">
+                <option>無し</option>
+                <option>有り</option>
+              </select></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>緊急連絡先</h2>
+          <div class="grid">
+            <div>
+              <label>クラマネ</label>
+              <input name="emg_clubman" type="text" placeholder="例：中村斎人" />
+            </div>
+            <div>
+              <label>担当役員</label>
+              <input name="emg_officer" type="text" placeholder="例：名前（担当部署）" />
+            </div>
+            <div>
+              <label>当日責任者</label>
+              <input name="emg_day" type="text" placeholder="例：名前（セク長やリーダー）" />
+            </div>
+            <div>
+              <label>緊急時の連絡体制は明確か？</label>
+              <select name="emg_ok">
+                <option>はい</option>
+                <option>いいえ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="saveLocal">一時保存（端末）</button>
+          <button type="button" id="loadLocal">読込</button>
+          <button type="button" id="clearLocal">クリア</button>
+          <div style="flex:1"></div>
+          <button type="button" id="exportJSON">JSONダウンロード</button>
+          <button type="button" class="primary" id="exportDOCX">DOCX出力</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="pane">
+      <div class="preview" id="preview">
+        <!-- Live preview will be injected here -->
+      </div>
+    </div>
+    <div id="preview" style="flex:1; padding:1em; border-left:1px solid #ccc; overflow-y:auto;">
+      <!-- プレビューがここに出ます -->
+    </div>
+  </div>
+
+  <!-- 右：プレビュー（重複IDを排除し、可読化） -->
+  <div class="pane panel">
+    <div class="preview">
+      <h2>プレビュー</h2>
+      <div id="preview" class="prose"><!-- Live preview --></div>
+    </div>
+  </div>
+  </div>
+</body>
+
+<script>
+  const form = document.getElementById('form');
+  const preview = document.getElementById('preview');
+  const serverURL = 'http://127.0.0.1:5000';
+
+  let rawTemplate = "";
+
+  // 初期ロードでテンプレを取得
+  fetch(serverURL + "/template")
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        rawTemplate = data.template_text || "";
+        renderPreview({}); // 初期プレビュー
+      } else {
+        console.error("テンプレ取得失敗", data.error);
+        document.getElementById("preview").innerHTML = "テンプレ取得に失敗しました";
+      }
+    })
+    .catch(err => {
+      console.error("テンプレAPIエラー", err);
+      document.getElementById("preview").innerHTML = "テンプレ取得に失敗しました (通信エラー)";
+    });
+
+  function renderWithTokens(text, mapping) {
+    return text.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*(?:\|\|\s*(.+?))?\s*\}\}/g,
+      (match, key, deflt) => {
+        const val = mapping[key];
+        if (val !== undefined && val !== null && val !== "") {
+          return val;
+        }
+        return deflt || "";
+      });
+  }
+
+  function renderPreview(obj) {
+    const preview = document.getElementById("preview");
+    if (!preview) {
+      console.warn("#preview が見つかりません");
+      return;
+    }
+    if (!rawTemplate) {
+      preview.innerHTML = "テンプレがまだ読み込まれていません";
+      return;
+    }
+    const html = renderWithTokens(rawTemplate, obj)
+      .replace(/\n/g, "<br>")
+      .replace(/\t/g, "&emsp;");
+    preview.innerHTML = html;
+  }
+
+  const WEEKDAY_JP = ['日', '月', '火', '水', '木', '金', '土'];
+  function zeroPad(n) { return n.toString().padStart(2, '0'); }
+
+  function formatDateTimeFromParts(year, month, day, tStart, tEnd) {
+    if (!year || !month || !day || !tStart || !tEnd) return '';
+    try {
+      const y = parseInt(year, 10);
+      const m = parseInt(month, 10);
+      const d = parseInt(day, 10);
+      const date = new Date(y, m - 1, d);
+      if (isNaN(date.getTime())) return '';
+      const wd = WEEKDAY_JP[date.getDay()];
+      const ts = tStart.slice(0, 5);
+      const te = tEnd.slice(0, 5);
+      return `${y}年${m}月${d}日（${wd}） ${ts}-${te}`;
+    } catch (e) { return ''; }
+  }
+
+  function populateDateSelects() {
+    const yearSel = document.getElementById('yearSel');
+    const monthSel = document.getElementById('monthSel');
+    const daySel = document.getElementById('daySel');
+    if (!yearSel || !monthSel || !daySel) return;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const years = [currentYear, currentYear + 1, currentYear + 2];
+    years.forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = `${y}年`;
+      yearSel.appendChild(opt);
+    });
+    for (let m = 1; m <= 12; m++) {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = `${m}月`;
+      monthSel.appendChild(opt);
+    }
+    function rebuildDays() {
+      const y = parseInt(yearSel.value, 10) || currentYear;
+      const m = parseInt(monthSel.value, 10) || 1;
+      const lastDay = new Date(y, m, 0).getDate();
+      const prev = daySel.value;
+      daySel.innerHTML = '';
+      for (let d = 1; d <= lastDay; d++) {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = `${d}日`;
+        daySel.appendChild(opt);
+      }
+      if (prev && prev <= lastDay) daySel.value = prev;
+    }
+    yearSel.onchange = rebuildDays;
+    monthSel.onchange = rebuildDays;
+    yearSel.value = currentYear.toString();
+    monthSel.value = (now.getMonth() + 1).toString();
+    rebuildDays();
+    daySel.value = now.getDate().toString();
+  }
+
+  function formDataToObject(formEl) {
+    const data = new FormData(formEl);
+    const obj = {};
+    for (const [k, v] of data.entries()) {
+      if (k === 'skills') {
+        if (!obj[k]) obj[k] = [];
+        if (!obj[k].includes(v)) obj[k].push(v);
+      } else {
+        obj[k] = v;
+      }
+    }
+    // keep only top 3 skills
+    if (obj.skills && obj.skills.length > 3) obj.skills = obj.skills.slice(0, 3);
+
+    // 日時の整形（YYYY年M月D日（曜） HH:MM-HH:MM）
+    obj.formatted_datetime = formatDateTimeFromParts(obj.year, obj.month, obj.day, obj.time_start, obj.time_end);
+
+    return obj;
+  }
+
+  function renderPreview(obj) {
+    const kv = (k, v) => `<div class="key">${k}</div><div>${v || '<span class="muted">（未入力）</span>'}</div>`;
+    preview.innerHTML = `
+        <h2>基本情報</h2>
+        <div class="kvs">
+          ${kv('事業名', obj.title)}
+          ${kv('実施クラブ', obj.club)}
+          ${kv('実施部署', obj.dept)}
+          ${kv('活動カテゴリ', obj.category)}
+          ${kv('活動分野', obj.field)}
+          ${kv('日時', obj.formatted_datetime)}
+          ${kv('活動場所', obj.place)}
+          ${kv('想定人数（IVUSA）', obj.expected_ivusa)}
+          ${kv('想定人数（他）', obj.expected_other)}
+          ${kv('事業責任者', obj.owner)}
+          ${kv('他クラブ参加', obj.other_club)}
+          ${kv('受益者', obj.beneficiary)}
+          ${kv('新規事業', obj.is_new)}
+          ${kv('活動内容の種類', obj.activity_kind)}
+          ${kv('活動期間', obj.duration)}
+          ${kv('必要スキル（上位3）', (obj.skills || []).map(s => `<span class="badge">${s}</span>`).join('') || '<span class="muted">（未選択）</span>')}
+        </div>
+
+        <h2>目的・達成要件</h2>
+        <div>${(obj.purpose || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+        <h3 class="small">達成要件</h3>
+        <div>${(obj.kpi || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>内容</h2>
+        <div>${(obj.details || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>事業計画</h2>
+        <h3 class="small">実施までのスケジュール</h3>
+        <div>${(obj.pre_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+        <h3 class="small">計画実行スケジュール</h3>
+        <div>${(obj.exec_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>当日計画</h2>
+        <div>${(obj.day_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>リスクチェック</h2>
+        <h3 class="small">事前のリスクヘッジ</h3>
+        <div>${(obj.risk_before || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+        <h3 class="small">当日のリスクヘッジ</h3>
+        <div>${(obj.risk_during || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>実施主体</h2>
+        <div>${(obj.stakeholders || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
+
+        <h2>その他</h2>
+        <div class="kvs">
+          ${kv('役所への申請', obj.permit_city)}
+          ${kv('消防署への申請', obj.permit_fire)}
+          ${kv('警察への申請', obj.permit_police)}
+          ${kv('その他', obj.other_notes)}
+          ${kv('予算総額（円）', obj.budget_total)}
+          ${kv('資金調達方法', obj.funding)}
+          ${kv('予算の使途', obj.budget_usage)}
+          ${kv('プレスリリース', obj.press)}
+          ${kv('学生運転', obj.drive_student)}
+          ${kv('レンタカー利用', obj.rentacar)}
+          ${kv('一般参加', obj.general_join)}
+          ${kv('刃物使用', obj.knife)}
+          ${kv('動力機材使用', obj.power_tool)}
+          ${kv('自炊', obj.self_cook)}
+          ${kv('宿泊利用', obj.stay)}
+        </div>
+
+        <h2>緊急連絡先</h2>
+        <div class="kvs">
+          ${kv('クラマネ', obj.emg_clubman)}
+          ${kv('担当役員', obj.emg_officer)}
+          ${kv('当日責任者', obj.emg_day)}
+          ${kv('緊急時の連絡体制', obj.emg_ok)}
+        </div>
+      `;
+  }
+
+  function update() { renderPreview(formDataToObject(form)); }
+  form.addEventListener('input', update);
+  window.addEventListener('DOMContentLoaded', () => {
+    populateDateSelects();
+    const saved = localStorage.getItem('kikasu_proposal');
+    if (saved) {
+      const obj = JSON.parse(saved);
+      for (const [k, v] of Object.entries(obj)) {
+        const el = form.elements[k];
+        if (!el) continue;
+        if (el.type === 'select-one' || el.type === 'text' || el.type === 'number' || el.type === 'textarea') {
+          el.value = v;
+        }
+      }
+      // restore skills
+      const skills = obj.skills || [];
+      [...form.querySelectorAll('input[name="skills"]')].forEach(cb => {
+        cb.checked = skills.includes(cb.value);
+      });
+    }
+    update();
+  });
+
+  document.getElementById('saveLocal').onclick = () => {
+    const obj = formDataToObject(form);
+    localStorage.setItem('kikasu_proposal', JSON.stringify(obj));
+    alert('この端末に一時保存しました。');
+  };
+  document.getElementById('loadLocal').onclick = () => {
+    const saved = localStorage.getItem('kikasu_proposal');
+    if (!saved) return alert('保存データが見つかりません。');
+    const obj = JSON.parse(saved);
+    for (const [k, v] of Object.entries(obj)) {
+      const el = form.elements[k];
+      if (!el) continue;
+      if (el.type === 'select-one' || el.type === 'text' || el.type === 'number' || el.type === 'textarea') {
+        el.value = v;
+      }
+    }
+    const skills = obj.skills || [];
+    [...form.querySelectorAll('input[name="skills"]')].forEach(cb => cb.checked = skills.includes(cb.value));
+    update();
+    alert('保存データを読み込みました。');
+  };
+  document.getElementById('clearLocal').onclick = () => {
+    if (!confirm('プレビューと入力をクリアします。よろしいですか？')) return;
+    form.reset();
+    localStorage.removeItem('kikasu_proposal');
+    update();
+  };
+  document.getElementById('exportJSON').onclick = () => {
+    const obj = formDataToObject(form);
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'proposal.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  document.getElementById('exportDOCX').onclick = async () => {
+    const obj = formDataToObject(form);
+    try {
+      const res = await fetch(serverURL + '/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj)
+      });
+      if (!res.ok) throw new Error('DOCX生成に失敗しました');
+      const data = await res.json();
+      if (data.download_url) {
+        const a = document.createElement('a');
+        a.href = serverURL + data.download_url;
+        a.target = '_blank';
+        a.click();
+      } else {
+        alert('生成成功。出力先: ' + (data.output_path || ''));
+      }
+    } catch (e) {
+      alert('エラー: ' + e.message + '\\nサーバー（app.py）が起動しているか確認してください。');
+    }
+  };
+</script>
+</body>
+
+</html>
