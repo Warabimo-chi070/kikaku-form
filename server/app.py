@@ -5,18 +5,20 @@ import datetime as dt
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 from docx import Document
+from pathlib import Path
 
-# ─────────────────────────────────────────────────────────────
-# Flask config: / → frontend/index.html, /public/* → frontend/public/*
-# ─────────────────────────────────────────────────────────────
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-PUBLIC_DIR = os.path.join(FRONTEND_DIR, "public")
+# ── Base paths ─────────────────────────────────────────────
+SERVER_DIR = Path(__file__).resolve().parent            # .../kikaku_form/server
+PROJECT_ROOT = SERVER_DIR.parent                        # .../kikaku_form
 
+FRONTEND_DIR = PROJECT_ROOT / "frontend"                # ← ここが frontend 直下
+PUBLIC_DIR   = FRONTEND_DIR / "public"
+
+# Flask 構成
 app = Flask(
     __name__,
-    template_folder=FRONTEND_DIR,         # index.html をここから返す
-    static_folder=PUBLIC_DIR,             # /public/ 以下の静的ファイル
+    template_folder=str(FRONTEND_DIR),                  # frontend/index.html を返す
+    static_folder=str(PUBLIC_DIR),                      # /public/* を配信
     static_url_path="/public"
 )
 CORS(app)
@@ -24,9 +26,9 @@ CORS(app)
 # ─────────────────────────────────────────────────────────────
 # Paths
 # ─────────────────────────────────────────────────────────────
-DOCX_TEMPLATE = os.path.join(BASE_DIR, "server", "templates", "kinugasa.docx")
-OUTPUT_DIR = os.path.join(BASE_DIR, "output")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+DOCX_TEMPLATE = (SERVER_DIR / "templates" / "kinugasa.docx").as_posix()
+OUTPUT_DIR    = (SERVER_DIR / "output")
+OUTPUT_DIR.mkdir(exist_ok=True)
 
 # ─────────────────────────────────────────────────────────────
 # Token helpers: {{ key }} / {{ key || default }}
