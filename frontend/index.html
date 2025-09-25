@@ -1,188 +1,70 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>衣笠クラブ 企画書ジェネレーター</title>
   <link rel="stylesheet" href="./public/style.css" />
   <style>
-    body {
+    :root{
+      --bg:#0f1115; --panel:#111827; --border:#1f2937; --muted:#94a3b8; --text:#eaeef7;
+      --surface:#0b0f17; --btn:#1f2937; --primary:#2563eb;
+    }
+    html,body{height:100%}
+    body{
       font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      margin: 0;
-      background: #0f1115;
-      color: #eaeef7;
+      margin:0; background:var(--bg); color:var(--text);
     }
-
-    header {
-      padding: 16px 20px;
-      background: #111827;
-      border-bottom: 1px solid #1f2937;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    header{padding:16px 20px; background:var(--panel); border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:10;}
+    header h1{margin:0; font-size:18px}
+    .wrap{display:grid; grid-template-columns: 1fr 420px; gap:0; height:calc(100vh - 60px);}
+    .pane{overflow:auto;}
+    .left{border-right:1px solid var(--border);}
+    .right{position:relative;}
+    .sticky{position:sticky; top:76px}
+    .section{padding:16px 20px; border-bottom:1px dashed var(--border);}
+    .section h2{margin:0 0 8px; font-size:16px;}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .triple{display:grid; grid-template-columns:repeat(3, minmax(120px,1fr)); gap:12px;}
+    .times{display:grid; grid-template-columns:repeat(2, minmax(140px,1fr)); gap:12px;}
+    label{font-size:12px; opacity:.9; display:block; margin-bottom:6px}
+    input[type="text"], input[type="number"], textarea, select, input[type="time"]{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid #334155; background:var(--surface); color:var(--text);
+      min-width:0;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      height: calc(100vh - 60px);
-    }
-
-    .pane {
-      overflow: auto;
-    }
-
-    .left {
-      border-right: 1px solid #1f2937;
-    }
-
-    .section {
-      padding: 16px 20px;
-      border-bottom: 1px dashed #1f2937;
-    }
-
-    .section h2 {
-      margin: 0 0 8px;
-      font-size: 16px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    label {
-      font-size: 12px;
-      opacity: 0.9;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="datetime-local"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-      background: #0b0f17;
-      color: #eaeef7;
-    }
-
-    textarea {
-      min-height: 88px;
-    }
-
-    .hint {
-      font-size: 11px;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-
-    .actions {
-      position: sticky;
-      bottom: 0;
-      background: #0b0f17;
-      padding: 12px 20px;
-      border-top: 1px solid #1f2937;
-      display: flex;
-      gap: 8px;
-    }
-
-    button {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-      background: #1f2937;
-      color: #eaeef7;
-      cursor: pointer;
-    }
-
-    button.primary {
-      background: #2563eb;
-      border-color: #2563eb;
-    }
-
-    .preview {
-      padding: 16px 20px;
-    }
-
-    .preview h2 {
-      margin: 16px 0 6px;
-      font-size: 16px;
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 6px;
-    }
-
-    .kvs {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 6px 12px;
-      font-size: 14px;
-    }
-
-    .kvs div.key {
-      opacity: 0.8;
-    }
-
-    .muted {
-      opacity: 0.7;
-    }
-
-    .two {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid #334155;
-      font-size: 11px;
-      margin-right: 4px;
-    }
-
-    .ok {
-      color: #22c55e;
-    }
-
-    .err {
-      color: #ef4444;
-    }
-
-    .small {
-      font-size: 12px;
-    }
-
-    a {
-      color: #93c5fd;
+    textarea{min-height:88px}
+    .hint{font-size:11px; opacity:.75; margin-top:4px}
+    .actions{position:sticky; bottom:0; background:rgba(11,15,23,.95); padding:12px 20px;
+      border-top:1px solid var(--border); display:flex; gap:8px; align-items:center;}
+    button{padding:10px 14px; border-radius:10px; border:1px solid #334155; background:var(--btn); color:var(--text); cursor:pointer}
+    button.primary{background:var(--primary); border-color:var(--primary)}
+    .card{background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin:16px;}
+    .card-head{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border)}
+    .card-body{padding:16px}
+    .preview h2{margin:16px 0 6px; font-size:16px; border-bottom:1px solid var(--border); padding-bottom:6px}
+    .kvs{display:grid; grid-template-columns:180px 1fr; gap:6px 12px; font-size:14px}
+    .kvs .key{opacity:.8}
+    .muted{opacity:.7}
+    .small{font-size:12px}
+    @media (max-width:1100px){
+      .wrap{grid-template-columns:1fr}
+      .right{order:-1}
+      .card{margin:12px}
+      .grid{grid-template-columns:1fr}
+      .two{grid-template-columns:1fr}
+      .triple{grid-template-columns:repeat(3, minmax(0,1fr))}
+      .times{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
-
 <body>
-  <header class="header">
-    <div class="header__inner">
-      <div class="brand">衣笠クラブ 企画書ジェネレーター</div>
-      <div class="sub">ライブプレビュー &amp; DOCX出力</div>
-    </div>
+  <header>
+    <h1>衣笠クラブ 企画書ジェネレーター</h1>
   </header>
-  <!-- 2カラムの親に shell を加えてデザイン適用 -->
-  <div class="wrap shell">
-    <!-- 左：フォーム（カード化） -->
-    <div class="pane left panel">
+  <div class="wrap">
+    <div class="pane left">
       <form id="form">
         <!-- ───── 基本情報 ───── -->
         <div class="section">
@@ -516,315 +398,17 @@
         </div>
       </form>
     </div>
-
-    <div class="pane">
-      <div class="preview" id="preview">
-        <!-- Live preview will be injected here -->
+    <div class="pane right">
+      <div class="card sticky">
+        <div class="card-head">
+          <h2>プレビュー</h2>
+          <small id="updatedAt">—</small>
+        </div>
+        <div class="card-body">
+          <div id="preview"></div>
+        </div>
       </div>
     </div>
-    <div id="preview" style="flex:1; padding:1em; border-left:1px solid #ccc; overflow-y:auto;">
-      <!-- プレビューがここに出ます -->
-    </div>
   </div>
-
-  <!-- 右：プレビュー（重複IDを排除し、可読化） -->
-  <div class="pane panel">
-    <div class="preview">
-      <h2>プレビュー</h2>
-      <div id="preview" class="prose"><!-- Live preview --></div>
-    </div>
-  </div>
-  </div>
-</body>
-
-<script>
-  const form = document.getElementById('form');
-  const preview = document.getElementById('preview');
-  const serverURL = 'http://127.0.0.1:5000';
-
-  let rawTemplate = "";
-
-  // 初期ロードでテンプレを取得
-  fetch(serverURL + "/template")
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        rawTemplate = data.template_text || "";
-        renderPreview({}); // 初期プレビュー
-      } else {
-        console.error("テンプレ取得失敗", data.error);
-        document.getElementById("preview").innerHTML = "テンプレ取得に失敗しました";
-      }
-    })
-    .catch(err => {
-      console.error("テンプレAPIエラー", err);
-      document.getElementById("preview").innerHTML = "テンプレ取得に失敗しました (通信エラー)";
-    });
-
-  function renderWithTokens(text, mapping) {
-    return text.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*(?:\|\|\s*(.+?))?\s*\}\}/g,
-      (match, key, deflt) => {
-        const val = mapping[key];
-        if (val !== undefined && val !== null && val !== "") {
-          return val;
-        }
-        return deflt || "";
-      });
-  }
-
-  function renderPreview(obj) {
-    const preview = document.getElementById("preview");
-    if (!preview) {
-      console.warn("#preview が見つかりません");
-      return;
-    }
-    if (!rawTemplate) {
-      preview.innerHTML = "テンプレがまだ読み込まれていません";
-      return;
-    }
-    const html = renderWithTokens(rawTemplate, obj)
-      .replace(/\n/g, "<br>")
-      .replace(/\t/g, "&emsp;");
-    preview.innerHTML = html;
-  }
-
-  const WEEKDAY_JP = ['日', '月', '火', '水', '木', '金', '土'];
-  function zeroPad(n) { return n.toString().padStart(2, '0'); }
-
-  function formatDateTimeFromParts(year, month, day, tStart, tEnd) {
-    if (!year || !month || !day || !tStart || !tEnd) return '';
-    try {
-      const y = parseInt(year, 10);
-      const m = parseInt(month, 10);
-      const d = parseInt(day, 10);
-      const date = new Date(y, m - 1, d);
-      if (isNaN(date.getTime())) return '';
-      const wd = WEEKDAY_JP[date.getDay()];
-      const ts = tStart.slice(0, 5);
-      const te = tEnd.slice(0, 5);
-      return `${y}年${m}月${d}日（${wd}） ${ts}-${te}`;
-    } catch (e) { return ''; }
-  }
-
-  function populateDateSelects() {
-    const yearSel = document.getElementById('yearSel');
-    const monthSel = document.getElementById('monthSel');
-    const daySel = document.getElementById('daySel');
-    if (!yearSel || !monthSel || !daySel) return;
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const years = [currentYear, currentYear + 1, currentYear + 2];
-    years.forEach(y => {
-      const opt = document.createElement('option');
-      opt.value = y; opt.textContent = `${y}年`;
-      yearSel.appendChild(opt);
-    });
-    for (let m = 1; m <= 12; m++) {
-      const opt = document.createElement('option');
-      opt.value = m; opt.textContent = `${m}月`;
-      monthSel.appendChild(opt);
-    }
-    function rebuildDays() {
-      const y = parseInt(yearSel.value, 10) || currentYear;
-      const m = parseInt(monthSel.value, 10) || 1;
-      const lastDay = new Date(y, m, 0).getDate();
-      const prev = daySel.value;
-      daySel.innerHTML = '';
-      for (let d = 1; d <= lastDay; d++) {
-        const opt = document.createElement('option');
-        opt.value = d; opt.textContent = `${d}日`;
-        daySel.appendChild(opt);
-      }
-      if (prev && prev <= lastDay) daySel.value = prev;
-    }
-    yearSel.onchange = rebuildDays;
-    monthSel.onchange = rebuildDays;
-    yearSel.value = currentYear.toString();
-    monthSel.value = (now.getMonth() + 1).toString();
-    rebuildDays();
-    daySel.value = now.getDate().toString();
-  }
-
-  function formDataToObject(formEl) {
-    const data = new FormData(formEl);
-    const obj = {};
-    for (const [k, v] of data.entries()) {
-      if (k === 'skills') {
-        if (!obj[k]) obj[k] = [];
-        if (!obj[k].includes(v)) obj[k].push(v);
-      } else {
-        obj[k] = v;
-      }
-    }
-    // keep only top 3 skills
-    if (obj.skills && obj.skills.length > 3) obj.skills = obj.skills.slice(0, 3);
-
-    // 日時の整形（YYYY年M月D日（曜） HH:MM-HH:MM）
-    obj.formatted_datetime = formatDateTimeFromParts(obj.year, obj.month, obj.day, obj.time_start, obj.time_end);
-
-    return obj;
-  }
-
-  function renderPreview(obj) {
-    const kv = (k, v) => `<div class="key">${k}</div><div>${v || '<span class="muted">（未入力）</span>'}</div>`;
-    preview.innerHTML = `
-        <h2>基本情報</h2>
-        <div class="kvs">
-          ${kv('事業名', obj.title)}
-          ${kv('実施クラブ', obj.club)}
-          ${kv('実施部署', obj.dept)}
-          ${kv('活動カテゴリ', obj.category)}
-          ${kv('活動分野', obj.field)}
-          ${kv('日時', obj.formatted_datetime)}
-          ${kv('活動場所', obj.place)}
-          ${kv('想定人数（IVUSA）', obj.expected_ivusa)}
-          ${kv('想定人数（他）', obj.expected_other)}
-          ${kv('事業責任者', obj.owner)}
-          ${kv('他クラブ参加', obj.other_club)}
-          ${kv('受益者', obj.beneficiary)}
-          ${kv('新規事業', obj.is_new)}
-          ${kv('活動内容の種類', obj.activity_kind)}
-          ${kv('活動期間', obj.duration)}
-          ${kv('必要スキル（上位3）', (obj.skills || []).map(s => `<span class="badge">${s}</span>`).join('') || '<span class="muted">（未選択）</span>')}
-        </div>
-
-        <h2>目的・達成要件</h2>
-        <div>${(obj.purpose || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-        <h3 class="small">達成要件</h3>
-        <div>${(obj.kpi || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>内容</h2>
-        <div>${(obj.details || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>事業計画</h2>
-        <h3 class="small">実施までのスケジュール</h3>
-        <div>${(obj.pre_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-        <h3 class="small">計画実行スケジュール</h3>
-        <div>${(obj.exec_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>当日計画</h2>
-        <div>${(obj.day_schedule || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>リスクチェック</h2>
-        <h3 class="small">事前のリスクヘッジ</h3>
-        <div>${(obj.risk_before || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-        <h3 class="small">当日のリスクヘッジ</h3>
-        <div>${(obj.risk_during || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>実施主体</h2>
-        <div>${(obj.stakeholders || '').replace(/\\n/g, '<br>') || '<span class="muted">（未入力）</span>'}</div>
-
-        <h2>その他</h2>
-        <div class="kvs">
-          ${kv('役所への申請', obj.permit_city)}
-          ${kv('消防署への申請', obj.permit_fire)}
-          ${kv('警察への申請', obj.permit_police)}
-          ${kv('その他', obj.other_notes)}
-          ${kv('予算総額（円）', obj.budget_total)}
-          ${kv('資金調達方法', obj.funding)}
-          ${kv('予算の使途', obj.budget_usage)}
-          ${kv('プレスリリース', obj.press)}
-          ${kv('学生運転', obj.drive_student)}
-          ${kv('レンタカー利用', obj.rentacar)}
-          ${kv('一般参加', obj.general_join)}
-          ${kv('刃物使用', obj.knife)}
-          ${kv('動力機材使用', obj.power_tool)}
-          ${kv('自炊', obj.self_cook)}
-          ${kv('宿泊利用', obj.stay)}
-        </div>
-
-        <h2>緊急連絡先</h2>
-        <div class="kvs">
-          ${kv('クラマネ', obj.emg_clubman)}
-          ${kv('担当役員', obj.emg_officer)}
-          ${kv('当日責任者', obj.emg_day)}
-          ${kv('緊急時の連絡体制', obj.emg_ok)}
-        </div>
-      `;
-  }
-
-  function update() { renderPreview(formDataToObject(form)); }
-  form.addEventListener('input', update);
-  window.addEventListener('DOMContentLoaded', () => {
-    populateDateSelects();
-    const saved = localStorage.getItem('kikasu_proposal');
-    if (saved) {
-      const obj = JSON.parse(saved);
-      for (const [k, v] of Object.entries(obj)) {
-        const el = form.elements[k];
-        if (!el) continue;
-        if (el.type === 'select-one' || el.type === 'text' || el.type === 'number' || el.type === 'textarea') {
-          el.value = v;
-        }
-      }
-      // restore skills
-      const skills = obj.skills || [];
-      [...form.querySelectorAll('input[name="skills"]')].forEach(cb => {
-        cb.checked = skills.includes(cb.value);
-      });
-    }
-    update();
-  });
-
-  document.getElementById('saveLocal').onclick = () => {
-    const obj = formDataToObject(form);
-    localStorage.setItem('kikasu_proposal', JSON.stringify(obj));
-    alert('この端末に一時保存しました。');
-  };
-  document.getElementById('loadLocal').onclick = () => {
-    const saved = localStorage.getItem('kikasu_proposal');
-    if (!saved) return alert('保存データが見つかりません。');
-    const obj = JSON.parse(saved);
-    for (const [k, v] of Object.entries(obj)) {
-      const el = form.elements[k];
-      if (!el) continue;
-      if (el.type === 'select-one' || el.type === 'text' || el.type === 'number' || el.type === 'textarea') {
-        el.value = v;
-      }
-    }
-    const skills = obj.skills || [];
-    [...form.querySelectorAll('input[name="skills"]')].forEach(cb => cb.checked = skills.includes(cb.value));
-    update();
-    alert('保存データを読み込みました。');
-  };
-  document.getElementById('clearLocal').onclick = () => {
-    if (!confirm('プレビューと入力をクリアします。よろしいですか？')) return;
-    form.reset();
-    localStorage.removeItem('kikasu_proposal');
-    update();
-  };
-  document.getElementById('exportJSON').onclick = () => {
-    const obj = formDataToObject(form);
-    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'proposal.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-  document.getElementById('exportDOCX').onclick = async () => {
-    const obj = formDataToObject(form);
-    try {
-      const res = await fetch(serverURL + '/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(obj)
-      });
-      if (!res.ok) throw new Error('DOCX生成に失敗しました');
-      const data = await res.json();
-      if (data.download_url) {
-        const a = document.createElement('a');
-        a.href = serverURL + data.download_url;
-        a.target = '_blank';
-        a.click();
-      } else {
-        alert('生成成功。出力先: ' + (data.output_path || ''));
-      }
-    } catch (e) {
-      alert('エラー: ' + e.message + '\\nサーバー（app.py）が起動しているか確認してください。');
-    }
-  };
-</script>
 </body>
 </html>
