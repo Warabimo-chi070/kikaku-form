@@ -24,7 +24,7 @@ CORS(app)
 # ─────────────────────────────────────────────────────────────
 # Paths
 # ─────────────────────────────────────────────────────────────
-DOCX_TEMPLATE = os.path.join(BASE_DIR, "server", "templates", "衣笠クラブ企画書フォーマット.docx")
+DOCX_TEMPLATE = os.path.join(BASE_DIR, "server", "templates", "kinugasa.docx")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -113,7 +113,7 @@ def get_template():
     """テンプレートDOCXからテキスト抽出（プレビュー用）"""
     if not os.path.exists(DOCX_TEMPLATE):
         return jsonify(ok=False, error="DOCX template not found",
-                       hint="server/templates/ に衣笠クラブ企画書フォーマット.docx を置いてください。"), 400
+                       hint="server/templates/ にkinugasa.docx を置いてください。"), 400
     try:
         text = extract_doc_text(DOCX_TEMPLATE)
         return jsonify(ok=True, template_text=text)
@@ -134,7 +134,7 @@ def generate():
     """
     if not os.path.exists(DOCX_TEMPLATE):
         return jsonify(ok=False, error="DOCX template not found",
-                       hint="server/templates/ に衣笠クラブ企画書フォーマット.docx を置いてください。"), 400
+                       hint="server/templates/ にkinugasa.docx を置いてください。"), 400
 
     data = request.get_json(force=True) or {}
 
