@@ -173,4 +173,4 @@ def download_file(filename):
 # ─────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     # ローカル確認用（Render本番は gunicorn app:app）
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
