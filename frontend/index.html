@@ -743,6 +743,15 @@
       `;
   }
 
+  function collect() {
+    const f = document.getElementById('form');
+    const fd = new FormData(f);
+    const obj = {};
+    for (const [k, v] of fd.entries()) obj[k] = v;
+    // 既にある year/month/day/timeStart/timeEnd から formatted_datetime を作ってもOK（サーバ側で自動計算もしてます）
+    return obj;
+  }
+
   function update() { renderPreview(formDataToObject(form)); }
   form.addEventListener('input', update);
   window.addEventListener('DOMContentLoaded', () => {
@@ -803,28 +812,34 @@
     a.click();
     URL.revokeObjectURL(url);
   };
-  document.getElementById('exportDOCX').onclick = async () => {
-    const obj = formDataToObject(form);
+  document.getElementById('exportDOCX').addEventListener('click', async () => {
     try {
-      const res = await fetch(serverURL + '/generate', {
+      const payload = collect();
+      const res = await fetch('/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(obj)
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error('DOCX生成に失敗しました');
-      const data = await res.json();
-      if (data.download_url) {
-        const a = document.createElement('a');
-        a.href = serverURL + data.download_url;
-        a.target = '_blank';
-        a.click();
-      } else {
-        alert('生成成功。出力先: ' + (data.output_path || ''));
+      if (!res.ok) {
+        const txt = await res.text();
+        alert('DOCX生成に失敗しました\n' + txt);
+        return;
       }
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      // タイトルが空なら noname
+      const base = (payload.title && payload.title.trim()) ? payload.title.trim() : 'noname';
+      a.download = `企画書_${base}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
     } catch (e) {
-      alert('エラー: ' + e.message + '\\nサーバー（app.py）が起動しているか確認してください。');
+      alert('通信エラー: ' + e.message);
     }
-  };
+  });
 </script>
 </body>
+
 </html>

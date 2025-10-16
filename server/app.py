@@ -2,10 +2,11 @@
 import os
 import re
 import datetime as dt
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template, send_file
 from flask_cors import CORS
 from docx import Document
 from pathlib import Path
+from io import BytesIO
 
 # ── Base paths ─────────────────────────────────────────────
 SERVER_DIR = Path(__file__).resolve().parent            # .../kikaku_form/server
@@ -151,17 +152,22 @@ def generate():
 
     mapping = {**data, "datetime": formatted}
 
-    # 生成
+    # DOCX 生成 → メモリに保存して即ダウンロード返却
     try:
         doc = Document(DOCX_TEMPLATE)
         replace_doc_tokens(doc, mapping)
 
-        ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-        out_name = f"企画書_{mapping.get('title','noname')}_{ts}.docx"
-        out_path = os.path.join(OUTPUT_DIR, out_name)
-        doc.save(out_path)
+        buf = BytesIO()
+        doc.save(buf)
+        buf.seek(0)
 
-        return jsonify(ok=True, filename=out_name, download_url=f"/download/{out_name}")
+        filename = f"企画書_{(mapping.get('title') or 'noname')}.docx"
+        return send_file(
+            buf,
+            mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            as_attachment=True,
+            download_name=filename,
+        )
     except Exception as e:
         return jsonify(ok=False, error=str(e)), 500
 
